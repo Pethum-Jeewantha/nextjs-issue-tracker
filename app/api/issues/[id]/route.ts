@@ -29,7 +29,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!issue)
         return NextResponse.json({ error: "Issue not found" }, { status: 404 });
 
-    prisma.issue.delete({ where: { id: issue.id } });
+    await prisma.issue.delete({ where: { id: issue.id } });
 
     return NextResponse.json({id: issue.id});
 }
