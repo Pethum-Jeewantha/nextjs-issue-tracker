@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 import IssueFormSkeleton from './loading';
 
 const IssueForm = dynamic(() => import(
-  '../components/IssueForm'),
+  '../_components/IssueForm'),
   {
     ssr: false,
     loading: () => <IssueFormSkeleton />
