@@ -1,4 +1,4 @@
-# AI Slackbot
+# Issue Tracker
 
 [![GitHub][linkedin-shield]][linkedin-url]
 [![GitHub][contributors-shield]][contributors-url]
