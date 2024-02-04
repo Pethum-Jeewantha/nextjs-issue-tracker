@@ -7,6 +7,7 @@ import NavBar from './NavBar'
 import { Container, Theme } from '@radix-ui/themes';
 import AuthProvider from './auth/Provider';
 import QueryClientProvider from './QueryClientProvider';
+import {WebSocketProvider} from "@/app/contexts/WebSocketContext";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,14 +29,16 @@ export default function RootLayout({
       <body className={inter.variable}>
         <QueryClientProvider>
           <AuthProvider>
-            <Theme appearance="light" accentColor="violet">
-              <NavBar />
-              <main className='p-5'>
-                <Container>
-                  {children}
-                </Container>
-              </main>
-            </Theme>
+            <WebSocketProvider>
+              <Theme appearance="light" accentColor="violet">
+                <NavBar />
+                <main className='p-5'>
+                  <Container>
+                    {children}
+                  </Container>
+                </main>
+              </Theme>
+            </WebSocketProvider>
           </AuthProvider>
         </QueryClientProvider>
       </body>

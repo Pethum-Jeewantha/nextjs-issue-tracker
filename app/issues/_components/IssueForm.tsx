@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { ErrorMessage, Spinner } from '@/app/components';
 import { Issue } from '@prisma/client';
 import SimpleMDE from 'react-simplemde-editor';
-import {closeSocket, makeSocket, sendMessage} from "@/app/issues/webSocket";
+import {useWebSocket} from "@/app/contexts/WebSocketContext";
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
@@ -21,18 +21,10 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         resolver: zodResolver(issueSchema)
     });
     const router = useRouter();
+    const {sendMessage} = useWebSocket();
+
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [ws, setWs] = useState<WebSocket | undefined>(undefined);
-
-    useEffect(() => {
-        const socket = makeSocket();
-        setWs(socket);
-
-        return () => {
-            ws && closeSocket(ws);
-        }
-    }, []);
 
     const onSubmit = handleSubmit(async (data: IssueFormData) => {
         try {
@@ -43,7 +35,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
             else
                 await axios.post('/api/issues', data);
 
-            ws && sendMessage(ws, { message: {isMessageSent: true} });
+            sendMessage({ message: {isMessageSent: true} });
             router.push('/issues/list');
         } catch (error) {
             setIsSubmitting(false);
