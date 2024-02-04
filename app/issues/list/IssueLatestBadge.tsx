@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Badge} from "@radix-ui/themes";
 import {useRouter} from "next/navigation";
 import {useWebSocket} from "@/app/contexts/WebSocketContext";
@@ -11,7 +11,11 @@ const IssueLatestBadge = () => {
     const {message} = useWebSocket();
     const { data: session } = useSession();
 
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState<boolean>(true);
+
+    useEffect(() => {
+        setIsVisible(true);
+    }, [message]);
 
     const handleBadgeClick = () => {
         router.refresh();
