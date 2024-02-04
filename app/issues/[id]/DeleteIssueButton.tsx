@@ -4,14 +4,17 @@ import { Spinner } from '@/app/components'
 import { AlertDialog, Button, Flex } from '@radix-ui/themes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {useWebSocket} from "@/app/contexts/WebSocketContext";
+import {useSession} from "next-auth/react";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     const router = useRouter();
     const {sendMessage} = useWebSocket();
     const [error, setError] = useState(false);
     const [isDeleting, setDeleting] = useState(false);
+    const { data: session } = useSession();
+
 
     const deleteIssue = async () => {
         try {
@@ -20,7 +23,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
             router.push('/issues/list');
             router.refresh();
 
-            sendMessage({ message: {isMessageSent: true}});
+            sendMessage({ message: {isMessageSent: true, senderEmail: session?.user?.email!}});
         } catch (error) {
             setDeleting(false);
             setError(true);

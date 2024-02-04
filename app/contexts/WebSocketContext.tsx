@@ -2,9 +2,10 @@
 
 import React, {createContext, useContext, useEffect, useState} from 'react';
 
-export interface Message {
+interface Message {
     message: {
         isMessageSent: boolean;
+        senderEmail: string;
     }
 }
 

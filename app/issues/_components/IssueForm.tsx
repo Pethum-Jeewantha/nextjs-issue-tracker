@@ -13,6 +13,7 @@ import { ErrorMessage, Spinner } from '@/app/components';
 import { Issue } from '@prisma/client';
 import SimpleMDE from 'react-simplemde-editor';
 import {useWebSocket} from "@/app/contexts/WebSocketContext";
+import {useSession} from "next-auth/react";
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
@@ -25,6 +26,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
 
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { data: session } = useSession();
 
     const onSubmit = handleSubmit(async (data: IssueFormData) => {
         try {
@@ -35,7 +37,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
             else
                 await axios.post('/api/issues', data);
 
-            sendMessage({ message: {isMessageSent: true} });
+            sendMessage({ message: {isMessageSent: true, senderEmail: session?.user?.email!}});
             router.push('/issues/list');
         } catch (error) {
             setIsSubmitting(false);
