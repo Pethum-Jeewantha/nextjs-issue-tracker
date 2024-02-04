@@ -20,7 +20,7 @@ const IssueLatestBadge = () => {
 
     return (
         <>
-            {message?.message.senderEmail != session?.user?.email && message?.message.isMessageSent && isVisible ? <Badge color='yellow' onClick={handleBadgeClick}><span className="cursor-pointer">Issues Updated</span></Badge> : null}
+            {message?.message.senderEmail != session?.user?.email && message?.message.isMessageSent && isVisible ? <Badge color='yellow' onClick={handleBadgeClick} className="mt-1"><span className="cursor-pointer">Issues Updated</span></Badge> : null}
         </>
     );
 };
