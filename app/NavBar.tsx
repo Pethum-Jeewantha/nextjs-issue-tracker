@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 import { AiFillBug } from 'react-icons/ai'
 import { Skeleton } from '@/app/components'
+import IssueLatestBadge from "@/app/issues/list/IssueLatestBadge";
 
 const NavBar = () => {
     return (
@@ -17,6 +18,7 @@ const NavBar = () => {
                     <Flex align='center' gap='3'>
                         <Link href='/'><AiFillBug /></Link>
                         <NavLinks />
+                        <IssueLatestBadge />
                     </Flex>
                     <AuthStatus />
                 </Flex>

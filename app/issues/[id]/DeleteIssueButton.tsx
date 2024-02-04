@@ -4,12 +4,23 @@ import { Spinner } from '@/app/components'
 import { AlertDialog, Button, Flex } from '@radix-ui/themes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
+import {closeSocket, makeSocket} from "@/app/issues/webSocket";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     const router = useRouter();
     const [error, setError] = useState(false);
     const [isDeleting, setDeleting] = useState(false);
+    const [ws, setWs] = useState<WebSocket | undefined>(undefined);
+
+    useEffect(() => {
+        const socket = makeSocket();
+        setWs(socket);
+
+        return () => {
+            ws && closeSocket(ws);
+        }
+    }, []);
 
     const deleteIssue = async () => {
         try {
@@ -17,6 +28,8 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
             await axios.delete(`/api/issues/${issueId}`);
             router.push('/issues/list');
             router.refresh();
+
+            ws && ws.send(JSON.stringify({ message: {isMessageSent: true} }));
         } catch (error) {
             setDeleting(false);
             setError(true);

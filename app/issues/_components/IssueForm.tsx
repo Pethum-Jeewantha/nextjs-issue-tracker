@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { Button, Callout, TextField } from '@radix-ui/themes'
-import dynamic from 'next/dynamic';
 import { useForm, Controller } from 'react-hook-form'
 import axios from 'axios';
 import "easymde/dist/easymde.min.css";
@@ -13,6 +12,7 @@ import { z } from 'zod';
 import { ErrorMessage, Spinner } from '@/app/components';
 import { Issue } from '@prisma/client';
 import SimpleMDE from 'react-simplemde-editor';
+import {closeSocket, makeSocket, sendMessage} from "@/app/issues/webSocket";
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
@@ -23,6 +23,16 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     const router = useRouter();
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [ws, setWs] = useState<WebSocket | undefined>(undefined);
+
+    useEffect(() => {
+        const socket = makeSocket();
+        setWs(socket);
+
+        return () => {
+            ws && closeSocket(ws);
+        }
+    }, []);
 
     const onSubmit = handleSubmit(async (data: IssueFormData) => {
         try {
@@ -33,6 +43,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
             else
                 await axios.post('/api/issues', data);
 
+            ws && sendMessage(ws, { message: {isMessageSent: true} });
             router.push('/issues/list');
         } catch (error) {
             setIsSubmitting(false);
